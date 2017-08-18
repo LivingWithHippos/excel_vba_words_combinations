@@ -1,0 +1,75 @@
+Sub combination_composer()
+'
+' combination_composer Macro
+'
+
+'
+
+primariga = ActiveCell.Row
+primaColonna = ActiveCell.Column
+Selection.End(xlToRight).Select
+ultimaColonna = Selection.Column
+totColonne = ultimaColonna - primaColonna
+Dim totCombinazioni As Long
+totCombinazioni = 1
+
+Dim ultimeRighe() As Integer
+Dim rigaCorrente() As Integer
+Dim combinazione() As String
+Dim risultati() As String
+ReDim ultimeRighe(totColonne)
+ReDim rigaCorrente(totColonne)
+ReDim combinazione(totColonne)
+
+i = 0
+
+For j = primaColonna To ultimaColonna
+    Cells(primariga, j).Select
+    Selection.End(xlDown).Select
+    ultimeRighe(i) = Selection.Row
+    totCombinazioni = totCombinazioni * (ultimeRighe(i) - primariga + 1)
+    i = i + 1
+Next j
+
+ReDim risultati(totCombinazioni)
+
+For j = 0 To totColonne
+    rigaCorrente(j) = primariga
+Next j
+
+looping = True
+i = rigaCorrente(0)
+
+Dim stringa As String
+n = 0
+
+Do While looping
+    For j = 0 To totColonne
+        stringa = stringa & " " & Cells(rigaCorrente(j), primaColonna + j).Value
+    Next j
+    risultati(n) = stringa
+    n = n + 1
+    stringa = ""
+    added = False
+    rigaCorrente(totColonne) = rigaCorrente(totColonne) + 1
+    For k = totColonne To 0 Step -1
+        If rigaCorrente(0) > ultimeRighe(0) Then Exit For
+        
+        
+        If rigaCorrente(k) > ultimeRighe(k) Then
+            rigaCorrente(k) = primariga
+            rigaCorrente(k - 1) = rigaCorrente(k - 1) + 1
+        End If
+    
+    Next k
+        
+    If rigaCorrente(0) > ultimeRighe(0) Then looping = False
+Loop
+
+Dim WS As Worksheet
+Set WS = Sheets.Add
+For i = 1 To totCombinazioni
+    Cells(i, 1).Value = risultati(i - 1)
+Next i
+End Sub
+ 
